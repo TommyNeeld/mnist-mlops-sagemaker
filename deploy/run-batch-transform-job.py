@@ -68,7 +68,6 @@ def main():
         role=args.model_execution_role_arn,
         name=model_name,
         sagemaker_session=sagemaker_session,
-        entry_point=os.path.join(BASE_DIR, "inference.py"),
     )
 
     input_path = "s3://{}/{}/".format(args.s3_bucket, args.s3_data_path)

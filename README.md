@@ -10,22 +10,23 @@ Inference will be ran in bulk at the end of the day. The output will be displaye
 ## Potential solution
 
 - SageMaker training and inference pipeline using [Batch Transform](https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html)
-    - To trigger inference:
+    - Options to trigger inference (**realistically, the process by which data is transformed in batches will be informed by the use-case**):
+        - Can manually trigger from uploaded json file (numpy array of images)
         - Use event bridge to trigger inference on a cron schedule (we know it is as nightly job) - may need to assume location of input data
         - Use API Gateway with Lambda to trigger manually - could have input data (or location of data) as an argument
             - if large quantities, may not want to send via post request, [API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html) has a total request limit of 10MB and `x_train` (60,000 numbers) has a json size of 160 MB.
 
 
     - To trigger training:
-        - Use event bridge to trigger inference on a cron schedule (we know it is as nightly job)
-        - Use CICD (e.g. github actions) to trigger a new training job
-        - Could automatically 'approve' the model so it is available for batch inference
+        - Could use event bridge to trigger inference on a cron schedule (we know it is as nightly job)
+        - Could use CICD (e.g. github actions) to trigger a new training job
+        - Could automatically 'Approve' the model so it is available for batch inference
 
 ## CICD
 Github actions?
 
 ## Infra
-Terraform
+TODO - Terraform
 
 ## Resources
 - Sagemaker MLOps template [article](https://aws.amazon.com/blogs/machine-learning/build-mlops-workflows-with-amazon-sagemaker-projects-gitlab-and-gitlab-pipelines/) and [repo](https://github.com/aws-samples/sagemaker-custom-project-templates/tree/main/mlops-template-gitlab)
@@ -48,15 +49,28 @@ sh run.sh
 
 ### Model batch run
 
+Set conda env:
+```bash
+cd deploy
+conda create -n mnist-mlops-deploy -y
+conda activate mnist-mlops-deploy
+conda install pip -y
+pip install -r requirements.txt
+```
+
 Generate input data and upload to s3:
 ```bash
 cd deploy
-python process_save_data.py
-sh data-upload.sh mnist-mlops-v1 input-data mnist.json
+python process_save_data.py --s3-bucket mnist-mlops-v1 --s3-data-path input-data
 ```
 
 Run batch transform job:
 ```bash
-export AWS_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
-python run-batch-transform-job.py --region eu-west-1 --s3-bucket mnist-mlops-v1 --s3-data-path input-data --model-package-name mnist-mlops-v1 --model-execution-role-arn arn:aws:iam::"${AWS_ACCOUNT}":role/a204384-sagemaker-tpa
+export MODEL_EXECUTION_ROLE_ARN=<MODEL_EXECUTION_ROLE_ARN>
+python run-batch-transform-job.py --region eu-west-1 --s3-bucket mnist-mlops-v1 --s3-data-path input-data --model-package-name mnist-mlops-v1 --model-execution-role-arn "${MODEL_EXECUTION_ROLE_ARN}"
+```
+
+**TODO:**
+Download and check predictions:
+```
 ```
