@@ -29,7 +29,7 @@ Inference will be ran in bulk at the end of the day. The output will be displaye
 **TODO** - Terraform?
 
 ## Tests
-**TODO** - Terraform?
+**TODO**
 
 ## To run
 
