@@ -1,7 +1,10 @@
+#!bin/bash
+SAGEMAKER_PIPELINE_ROLE_ARN=$1
+
 pip install --upgrade --force-reinstall . "awscli>1.20.30"
 export ARTIFACT_BUCKET=mnist-mlops-v1
 export AWS_REGION=eu-west-1
-export SAGEMAKER_PIPELINE_ROLE_ARN=arn:aws:iam::367216843975:role/a204384-sagemaker-tpa
+export SAGEMAKER_PIPELINE_ROLE_ARN=SAGEMAKER_PIPELINE_ROLE_ARN
 export SAGEMAKER_PROJECT_ID=v1
 export SAGEMAKER_PROJECT_NAME=mnist-mlops
 export SAGEMAKER_PROJECT_NAME_ID="${SAGEMAKER_PROJECT_NAME}-${SAGEMAKER_PROJECT_ID}"

@@ -44,7 +44,8 @@ cd build
 conda create -n mnist-mlops-build -y
 conda activate mnist-mlops-build
 conda install pip -y
-sh run.sh
+export SAGEMAKER_PIPELINE_ROLE_ARN=<SAGEMAKER_PIPELINE_ROLE_ARN>
+sh run.sh "${SAGEMAKER_PIPELINE_ROLE_ARN}"
 ```
 
 ### Model batch run
@@ -58,6 +59,8 @@ conda install pip -y
 pip install -r requirements.txt
 ```
 
+In conda env ... 
+
 Generate input data and upload to s3:
 ```bash
 cd deploy
@@ -66,8 +69,8 @@ python process_save_data.py --s3-bucket mnist-mlops-v1 --s3-data-path input-data
 
 Run batch transform job:
 ```bash
-export MODEL_EXECUTION_ROLE_ARN=<MODEL_EXECUTION_ROLE_ARN>
-python run-batch-transform-job.py --region eu-west-1 --s3-bucket mnist-mlops-v1 --s3-data-path input-data --model-package-name mnist-mlops-v1 --model-execution-role-arn "${MODEL_EXECUTION_ROLE_ARN}"
+export SAGEMAKER_PIPELINE_ROLE_ARN=<SAGEMAKER_PIPELINE_ROLE_ARN>
+python run-batch-transform-job.py --region eu-west-1 --s3-bucket mnist-mlops-v1 --s3-data-path input-data --model-package-name mnist-mlops-v1 --model-execution-role-arn "${SAGEMAKER_PIPELINE_ROLE_ARN}"
 ```
 
 **TODO** - Download and check predictions:
