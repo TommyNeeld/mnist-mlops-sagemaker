@@ -23,13 +23,13 @@ Inference will be ran in bulk at the end of the day. The output will be displaye
         - Could automatically 'Approve' the model so it is available for batch inference
 
 ## CICD
-Github actions?
+**TODO** - Github actions?
 
 ## Infra
-TODO - Terraform
+**TODO** - Terraform?
 
-## Resources
-- Sagemaker MLOps template [article](https://aws.amazon.com/blogs/machine-learning/build-mlops-workflows-with-amazon-sagemaker-projects-gitlab-and-gitlab-pipelines/) and [repo](https://github.com/aws-samples/sagemaker-custom-project-templates/tree/main/mlops-template-gitlab)
+## Tests
+**TODO** - Terraform?
 
 ## To run
 
@@ -70,7 +70,10 @@ export MODEL_EXECUTION_ROLE_ARN=<MODEL_EXECUTION_ROLE_ARN>
 python run-batch-transform-job.py --region eu-west-1 --s3-bucket mnist-mlops-v1 --s3-data-path input-data --model-package-name mnist-mlops-v1 --model-execution-role-arn "${MODEL_EXECUTION_ROLE_ARN}"
 ```
 
-**TODO:**
-Download and check predictions:
+**TODO** - Download and check predictions:
 ```
 ```
+
+## Useful resources
+- Sagemaker MLOps template [article](https://aws.amazon.com/blogs/machine-learning/build-mlops-workflows-with-amazon-sagemaker-projects-gitlab-and-gitlab-pipelines/) and [repo](https://github.com/aws-samples/sagemaker-custom-project-templates/tree/main/mlops-template-gitlab)
+
