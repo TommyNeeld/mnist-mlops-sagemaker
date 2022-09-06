@@ -7,29 +7,20 @@ Code to run model training and inference for the MNIST model [here](https://kera
 
 Inference will be ran in bulk at the end of the day. The output will be displayed directly to end users.
 
-## Potential solution
+## Potential SageMaker solution
 
-- SageMaker training and inference pipeline using [Batch Transform](https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html)
-    - Options to trigger inference (**realistically, the process by which data is transformed in batches will be informed by the use-case**):
-        - Can manually trigger from uploaded json file (numpy array of images)
-        - Use event bridge to trigger inference on a cron schedule (we know it is as nightly job) - may need to assume location of input data
-        - Use API Gateway with Lambda to trigger manually - could have input data (or location of data) as an argument
-            - if large quantities, may not want to send via post request, [API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html) has a total request limit of 10MB and `x_train` (60,000 numbers) has a json size of 160 MB.
-
-
+- SageMaker training pipeline and inference using [Batch Transform](https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html)
     - To trigger training:
         - Could use event bridge to trigger inference on a cron schedule (we know it is as nightly job)
         - Could use CICD (e.g. github actions) to trigger a new training job
         - Could automatically 'Approve' the model so it is available for batch inference
+        
+    - Options to trigger inference (**realistically, the process by which data is transformed in batches will be informed by the use-case**):
+        - Can manually trigger from uploaded json file (numpy array of the images with preprocessing applied)
+        - Use event bridge to trigger inference on a cron schedule (we know it is as nightly job) - may need to assume location of input data
+        - Use API Gateway with Lambda to trigger manually - could have input data (or location of data) as an argument
+            - if large quantities, may not want to send via post request, [API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html) has a total request limit of 10MB and `x_train` (60,000 numbers) has a json size of 160 MB.
 
-## CICD
-**TODO** - Github actions?
-
-## Infra
-**TODO** - Terraform?
-
-## Tests
-**TODO**
 
 ## To run
 
@@ -48,7 +39,7 @@ export SAGEMAKER_PIPELINE_ROLE_ARN=<SAGEMAKER_PIPELINE_ROLE_ARN>
 sh run.sh "${SAGEMAKER_PIPELINE_ROLE_ARN}"
 ```
 
-### Model batch run
+### Model inference - batch job
 
 Set conda env:
 ```bash
@@ -73,10 +64,22 @@ export SAGEMAKER_PIPELINE_ROLE_ARN=<SAGEMAKER_PIPELINE_ROLE_ARN>
 python run-batch-transform-job.py --region eu-west-1 --s3-bucket mnist-mlops-v1 --s3-data-path input-data --model-package-name mnist-mlops-v1 --model-execution-role-arn "${SAGEMAKER_PIPELINE_ROLE_ARN}"
 ```
 
-**TODO** - Download and check predictions:
+**TODO** - Download and check predictions programmatically - this could form part of testing
 ```
 ```
 
+## CICD
+**TODO** - Github actions
+
+## Infra
+**TODO** - Nothing to standup yet
+
+## Tests
+**TODO**
+- Does the model work before deployment? Use SageMaker conditional operator in pipeline
+- Add staging and pre-prod env / endpoints
+- In CICD test staging endpoint before manual approval to pre-prod - collect model validation from pipeline
+
 ## Useful resources
-- Sagemaker MLOps template [article](https://aws.amazon.com/blogs/machine-learning/build-mlops-workflows-with-amazon-sagemaker-projects-gitlab-and-gitlab-pipelines/) and [repo](https://github.com/aws-samples/sagemaker-custom-project-templates/tree/main/mlops-template-gitlab)
+- SageMaker MLOps template [article](https://aws.amazon.com/blogs/machine-learning/build-mlops-workflows-with-amazon-sagemaker-projects-gitlab-and-gitlab-pipelines/) and [repo](https://github.com/aws-samples/sagemaker-custom-project-templates/tree/main/mlops-template-gitlab)
 
